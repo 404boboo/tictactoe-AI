@@ -5,23 +5,23 @@ Tic Tac Toe Player
 import math
 import copy
 
-## which player starts firts with thier symbol ##
+# which player starts firts with thier symbol 
 playerX = True
 PlayerO = False
 X = "X"
 O = "O"
 EMPTY = None
 
-## dimensions ##
+# dimensions 
 colSize = 3
 rowSize = 3
 
-## actions and board ##
+# actions and board 
 playerXactions = []
 playerOactions = []
 board = [   ["X", "O", "X"],
-            ["O", "X", "X"],
-            ["X", EMPTY, EMPTY]]
+            ["O", "X", "O"],
+            ["X", "O", EMPTY]]
 
 
 def initial_state():
@@ -89,19 +89,35 @@ def result(board, action):
     else:
         raise Exception("Please choose a move that is not taken!")
 
-def winner(board):
+def winner():
     """
     Returns the winner of the game, if there is one.
     """
-    """ for i in board:
-        for j in board:
-          pos = board.get((i,j))
-          if pos == X:
-              *#
-    """
+    winCondition = [
+        # rows
+        {(0, 0), (0, 1), (0, 2)}, 
+        {(1, 0), (1, 1), (1, 2)},  
+        {(2, 0), (2, 1), (2, 2)},  
         
-
-    raise NotImplementedError
+        # columns 
+        {(0, 0), (1, 0), (2, 0)},  
+        {(0, 1), (1, 1), (2, 1)},  
+        {(0, 2), (1, 2), (2, 2)},  
+        
+        # diagonals
+        {(0, 0), (1, 1), (2, 2)},  
+        {(0, 2), (1, 1), (2, 0)}   
+    ]
+    for condition in winCondition:
+        if condition.issubset(playerXactions):
+            print("Player X won")
+            return playerX
+        elif condition.issubset(playerOactions):
+            print("Player O won")
+            return playerO
+        else:
+            print("No one Won")
+            return None
 
 
 def terminal(board):
