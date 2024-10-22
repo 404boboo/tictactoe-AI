@@ -5,17 +5,23 @@ Tic Tac Toe Player
 import math
 import copy
 
+## which player starts firts with thier symbol ##
+playerX = True
+PlayerO = False
 X = "X"
 O = "O"
 EMPTY = None
-playerX = True
-playerO = False
-## Dimensions ##
+
+## dimensions ##
 colSize = 3
 rowSize = 3
-board = [   [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9]]
+
+## actions and board ##
+playerXactions = []
+playerOactions = []
+board = [   ["X", "O", "X"],
+            ["O", "X", "X"],
+            ["X", EMPTY, EMPTY]]
 
 
 def initial_state():
@@ -31,14 +37,18 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    if playerX :
-        return X
+    global playerX 
+    global playerO 
+    if playerX == True:
         playerX = False
         playerO = True
+        return X
+
     else:
-        return O
         playerO = False
         playerX = True
+        return O
+
 
     raise Exception("unable to select player")
 
@@ -64,20 +74,33 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    row, col = action
     currentPlayer = player(board)
     actionBoard = copy.deepcopy(board)
-    if actionBoard[action] != EMPTY:
-     actionBoard[action] = currentPlayer
-     return actionBoard
+    if actionBoard[row][col] == EMPTY:
+        actionBoard[row][col] = currentPlayer
+        if currentPlayer == "X":
+            playerXactions.append(action)
+        else:
+            playerOactions.append(action)
+        print(actionBoard)
+        return actionBoard
+    
     else:
-       raise Exception("Please choose a move that is not taken!")
+        raise Exception("Please choose a move that is not taken!")
 
 def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
+    """ for i in board:
+        for j in board:
+          pos = board.get((i,j))
+          if pos == X:
+              *#
+    """
+        
 
-    
     raise NotImplementedError
 
 
@@ -102,3 +125,5 @@ def minimax(board):
     raise NotImplementedError
 
 actions(board)
+result(board, (2,2))
+print(playerXactions)
