@@ -9,6 +9,13 @@ O = "O"
 EMPTY = None
 playerX = True
 playerO = False
+## Dimensions ##
+colSize = 3
+rowSize = 3
+board = [   [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]]
+
 
 def initial_state():
     """
@@ -39,13 +46,30 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    raise NotImplementedError
+    possibleActions = set()
+    for i in range(rowSize):
+        for j in range(colSize):
+            if board[i][j] != EMPTY:
+                continue
+            else: 
+                possibleActions.add((i,j))
+    print("Empty spots on board: ")
+    print(possibleActions)
+    return possibleActions
+  
 
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    currentPlayer = player(board)
+    
+
+
+
+
+
     raise NotImplementedError
 
 
@@ -75,3 +99,5 @@ def minimax(board):
     Returns the optimal action for the current player on the board.
     """
     raise NotImplementedError
+
+actions(board)
