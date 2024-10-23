@@ -4,7 +4,7 @@ Tic Tac Toe Player
 
 import math
 import copy
-
+import random 
 # which player starts firts with thier symbol 
 playerX = True
 PlayerO = False
@@ -19,10 +19,11 @@ rowSize = 3
 # actions and board 
 playerXactions = []
 playerOactions = []
+'''
 board = [   ["X", "O", "X"],
             ["O", "X", "O"],
             ["X", "O", EMPTY]]
-
+'''
 
 def initial_state():
     """
@@ -37,18 +38,13 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    global playerX 
-    global playerO 
-    if playerX == True:
-        playerX = False
-        playerO = True
+    xCounter = sum(row.count(X) for row in board)
+    oCounter = sum(row.count(O) for row in board)
+
+    if xCounter <= oCounter:
         return X
-
     else:
-        playerO = False
-        playerX = True
         return O
-
 
     raise Exception("unable to select player")
 
@@ -74,6 +70,9 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    if action == None:
+        raise Exception("Action is none!")
+    
     row, col = action
     currentPlayer = player(board)
     actionBoard = copy.deepcopy(board)
@@ -111,25 +110,26 @@ def winner():
     for condition in winCondition:
         if condition.issubset(playerXactions):
             print("Player X won")
-            return playerX
-        elif condition.issubset(playerOactions):
+            return X
+    for condition in winCondition:
+        if condition.issubset(playerOactions):
             print("Player O won")
-            return playerO
-        else:
-            print("No one Won")
-            return None
-
+            return O
+    print("No one won")
+    return None
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    checkWinner = winner()
+    status = winner()
+    counter = 0
+    
     for i in board:
         for j in board:
             counter += 1
             if j == EMPTY:
-                if checkWinner == None:
+                if status == None:
                     return False
                     
                 else: 
@@ -144,15 +144,27 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    checkWinner = winner()
+    if checkWinner == X:
+        return 1
+    elif checkWinner == O:
+        return -1
+    else: 
+        return 0
+
 
 
 def minimax(board):
     """
-    Returns the optimal action for the current player on the board.
+    Returns the optimal action for the current player on the board. -- FOR NOW RANDOM TO TEST OTHER FUNCTIONS..
     """
-    raise NotImplementedError
+    availableMoves = list(actions(board))
+    if not availableMoves:
+        raise Exception("No available moves")
+    move = random.choice(availableMoves)  
+    print("The move is: ")
+    print(move)
+    return move
 
-actions(board)
-result(board, (2,2))
-print(playerXactions)
+
+
