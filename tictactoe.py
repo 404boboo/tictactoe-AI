@@ -16,9 +16,8 @@ EMPTY = None
 colSize = 3
 rowSize = 3
 
-# actions and board 
-playerXactions = []
-playerOactions = []
+# actions and board
+
 '''
 board = [   ["X", "O", "X"],
             ["O", "X", "O"],
@@ -29,6 +28,9 @@ def initial_state():
     """
     Returns starting state of the board.
     """
+    global playerXactions, playerOactions
+    playerXactions = []
+    playerOactions = []
     return [[EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
@@ -38,8 +40,8 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    xCounter = sum(row.count(X) for row in board)
-    oCounter = sum(row.count(O) for row in board)
+    xCounter = sum(i.count(X) for i in board)
+    oCounter = sum(i.count(O) for i in board)
 
     if xCounter <= oCounter:
         return X
@@ -73,11 +75,11 @@ def result(board, action):
     if action == None:
         raise Exception("Action is none!")
     
-    row, col = action
+    i, j = action
     currentPlayer = player(board)
     actionBoard = copy.deepcopy(board)
-    if actionBoard[row][col] == EMPTY:
-        actionBoard[row][col] = currentPlayer
+    if actionBoard[i][j] == EMPTY:
+        actionBoard[i][j] = currentPlayer
         if currentPlayer == "X":
             playerXactions.append(action)
         else:
@@ -122,22 +124,13 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    status = winner()
-    counter = 0
+    if winner() is not None:
+        return True
     
     for i in board:
-        for j in board:
-            counter += 1
-            if j == EMPTY:
-                if status == None:
-                    return False
-                    
-                else: 
-                    return True
-                    
-            else:
-                continue
-    return False    
+            if None in i:
+                return False
+    return True
 
 
 def utility(board):
@@ -146,10 +139,13 @@ def utility(board):
     """
     checkWinner = winner()
     if checkWinner == X:
+
         return 1
     elif checkWinner == O:
+
         return -1
-    else: 
+    else:
+
         return 0
 
 
@@ -161,10 +157,10 @@ def minimax(board):
     availableMoves = list(actions(board))
     if not availableMoves:
         raise Exception("No available moves")
-    move = random.choice(availableMoves)  
+    move = random.choice(availableMoves)
+    depth = len(availableMoves)
+    currentTurn = player(board)
+
     print("The move is: ")
     print(move)
     return move
-
-
-
