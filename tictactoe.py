@@ -80,53 +80,45 @@ def result(board, action):
     actionBoard = copy.deepcopy(board)
     if actionBoard[i][j] == EMPTY:
         actionBoard[i][j] = currentPlayer
-        if currentPlayer == "X":
-            playerXactions.append(action)
-        else:
-            playerOactions.append(action)
         print(actionBoard)
         return actionBoard
     
     else:
         raise Exception("Please choose a move that is not taken!")
 
-def winner():
+def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
     winCondition = [
         # rows
-        {(0, 0), (0, 1), (0, 2)}, 
-        {(1, 0), (1, 1), (1, 2)},  
-        {(2, 0), (2, 1), (2, 2)},  
+        [(0, 0), (0, 1), (0, 2)], 
+        [(1, 0), (1, 1), (1, 2)],  
+        [(2, 0), (2, 1), (2, 2)],  
         
         # columns 
-        {(0, 0), (1, 0), (2, 0)},  
-        {(0, 1), (1, 1), (2, 1)},  
-        {(0, 2), (1, 2), (2, 2)},  
+        [(0, 0), (1, 0), (2, 0)],  
+        [(0, 1), (1, 1), (2, 1)],  
+        [(0, 2), (1, 2), (2, 2)],  
         
         # diagonals
-        {(0, 0), (1, 1), (2, 2)},  
-        {(0, 2), (1, 1), (2, 0)}   
+        [(0, 0), (1, 1), (2, 2)],  
+        [(0, 2), (1, 1), (2, 0)]   
     ]
     for condition in winCondition:
-        if condition.issubset(playerXactions):
-            print("Player X won")
-            return X
-    for condition in winCondition:
-        if condition.issubset(playerOactions):
-            print("Player O won")
-            return O
+        if board[condition[0][0]][condition[0][1]] == board[condition[1][0]][condition[1][1]] == board[condition[2][0]][condition[2][1]] != EMPTY:
+            return board[condition[0][0]][condition[0][1]]
     print("No one won")
     return None
+
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if winner() is not None:
+    if winner(board) is not None:
         return True
-    
+
     for i in board:
             if None in i:
                 return False
@@ -137,7 +129,7 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    checkWinner = winner()
+    checkWinner = winner(board)
     if checkWinner == X:
 
         return 1
@@ -154,13 +146,28 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board. -- FOR NOW RANDOM TO TEST OTHER FUNCTIONS..
     """
-    availableMoves = list(actions(board))
-    if not availableMoves:
-        raise Exception("No available moves")
-    move = random.choice(availableMoves)
-    depth = len(availableMoves)
-    currentTurn = player(board)
+    if terminal(board):
+        return utility(board), None
 
-    print("The move is: ")
-    print(move)
-    return move
+    currentPlayer = player(board)
+    bestMove = None
+
+    if currentPlayer == X:
+        highScore = float('-inf')
+    else:
+        highScore = float('inf')
+
+    for move in actions(board):
+        minimaxBoard = result(board, move)
+        score,_ = minimax(minimaxBoard)
+        if currentPlayer == X:
+            if score > highScore:
+                highScore = score
+                bestMove = move
+        else:
+            if score < highScore:
+                highScore = score
+                bestMove = move
+ 
+
+    return highScore, bestMove
