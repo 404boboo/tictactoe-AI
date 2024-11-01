@@ -74,8 +74,8 @@ def result(board, action):
     """
     if action == None:
         raise Exception("Action is none!")
-    
     i, j = action
+    print(f"action : {action}, i: {i}, j: {j}") 
     currentPlayer = player(board)
     actionBoard = copy.deepcopy(board)
     if actionBoard[i][j] == EMPTY:
